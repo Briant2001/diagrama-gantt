@@ -8,6 +8,7 @@ import {
 import GSTC, { Config, GSTCResult } from 'gantt-schedule-timeline-calendar';
 import { Plugin as TimelinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js';
 import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js';
+import { LitElement, html, css } from 'lit';
 
 @Component({
   selector: 'app-root',
@@ -25,33 +26,48 @@ export class AppComponent implements OnInit {
   generateConfig(): Config {
     const iterations = 400;
     // GENERATE SOME ROWS
+    const user = {
+      name:"Oscar",
+      tareas:[{tarea1:"ir al baño"}]
+    }
+
 
     const rows = {};
     for (let i = 0; i < iterations; i++) {
+
       const withParent = i > 0 && i % 2 === 0;
+
       const id = GSTC.api.GSTCID(i.toString());
+      console.log("ROW",id)
+
       rows[id] = {
         id,
-        label: 'Room ' + i,
-        parentId: withParent ? GSTC.api.GSTCID((i - 1).toString()) : undefined,
+        user,
+        label:"Room"+i,
+        parentId: withParent ? GSTC.api.GSTCID((i-1 ).toString()) : undefined,
         expanded: false,
+
       };
     }
 
     // GENERATE SOME ROW -> ITEMS
 
     let start = GSTC.api.date().startOf('day').subtract(30, 'day');
+
+
     const items = {};
     for (let i = 0; i < iterations; i++) {
       const id = GSTC.api.GSTCID(i.toString());
       start = start.add(1, 'day');
+
       items[id] = {
         id,
-        label: 'User id ' + i,
+        label: 'Use id ' + i,
         time: {
           start: start.valueOf(),
           end: start.add(1, 'day').valueOf(),
         },
+
         rowId: id,
       };
     }
@@ -59,7 +75,6 @@ export class AppComponent implements OnInit {
     // LEFT SIDE LIST COLUMNS
 
     const columns = {
-      percent: 100,
       resizer: {
         inRealTime: true,
       },
@@ -72,11 +87,12 @@ export class AppComponent implements OnInit {
           width: 230,
           minWidth: 100,
           header: {
-            content: 'Room',
+            content:"Room",
           },
         },
       },
     };
+    console.log("Col", GSTC.api.GSTCID('label'))
 
     return {
       licenseKey:
@@ -94,12 +110,13 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const state = GSTC.api.stateFromConfig(this.generateConfig());
-    globalThis.state = state;
+    //globalThis.state = state;
+
     this.gstc = GSTC({
       element: this.gstcElement.nativeElement,
       state,
     });
-    globalThis.gstc = this.gstc;
+    //globalThis.gstc = this.gstc;
   }
 
   updateFirstItem(): void {
