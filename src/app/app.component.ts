@@ -20,7 +20,7 @@ import { LitElement, html, css } from 'lit';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit {
-  @ViewChild('gstcElement', { static: true }) gstcElement: ElementRef;
+  @ViewChild('gstcElem', { static: true }) gstcElement: ElementRef;
   gstc: GSTCResult;
 
   generateConfig(): Config {
@@ -38,17 +38,16 @@ export class AppComponent implements OnInit {
       const withParent = i > 0 && i % 2 === 0;
 
       const id = GSTC.api.GSTCID(i.toString());
-      console.log("ROW",id)
 
       rows[id] = {
         id,
-        user,
-        label:"Room"+i,
+        labe:"Room "+i,
         parentId: withParent ? GSTC.api.GSTCID((i-1 ).toString()) : undefined,
         expanded: false,
 
       };
     }
+    console.log("ROWS",rows);
 
     // GENERATE SOME ROW -> ITEMS
 
@@ -72,6 +71,8 @@ export class AppComponent implements OnInit {
       };
     }
 
+    console.log("ITEMS",items);
+
     // LEFT SIDE LIST COLUMNS
 
     const columns = {
@@ -79,9 +80,9 @@ export class AppComponent implements OnInit {
         inRealTime: true,
       },
       data: {
-        [GSTC.api.GSTCID('label')]: {
-          id: GSTC.api.GSTCID('label'),
-          data: 'label',
+        [GSTC.api.GSTCID('labe')]: {
+          id: GSTC.api.GSTCID('labe'),
+          data: 'labe',
           expander: true,
           isHtml: true,
           width: 230,
@@ -92,7 +93,7 @@ export class AppComponent implements OnInit {
         },
       },
     };
-    console.log("Col", GSTC.api.GSTCID('label'))
+    console.log("Col", columns)
 
     return {
       licenseKey:
